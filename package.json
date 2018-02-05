@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/Medscootsman/MSMO#readme",
   "dependencies": {
-    "express": "^4.16.2"
+    "express": "^4.16.2",
+    "express-generator": "^4.15.5"
   }
 }
