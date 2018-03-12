@@ -103,9 +103,14 @@ app.get('/', function(req, res) {
     res.sendFile(__dirname + "/index.html");
 });
 
+<<<<<<< HEAD
 app.get('/szechuansauce', function(req, res) {
     res.send("<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/62pcXHTHGy8\" frameborder=\"0\" allow=\"autoplay; encrypted-media\" allowfullscreen></iframe>")
     console.log("I'M PICKLE RIIIICK!");
+=======
+app.get('/login', function(req, rest) {
+  res.sendFile(__dirname + "/login.html")
+>>>>>>> ccff6834bd052ce591f8e870d12b13324684245e
 });
 
 app.use("/api", router);
