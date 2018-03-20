@@ -180,6 +180,14 @@ router.route('/teams')
 
 			// return that user
 			res.json(user);
+		})
+	})
+
+	.delete(function(req, res) {
+		User.remove({_id: req.params.user_id }, function(err, user) {
+			if (err) return res.send(err);
+
+			res.json({ message: 'Successfully deleted' });
 		});
 	});
 

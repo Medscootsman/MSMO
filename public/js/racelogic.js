@@ -1,10 +1,6 @@
-class RaceClass {
-  constructor(name) {
-    this.player = name;
-  }
-  get timeleft() {
-    
-  }
+class Race {
+  constructor(participants[], max) 
+
 }
 
 module.exports = Race;

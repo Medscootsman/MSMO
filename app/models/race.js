@@ -7,9 +7,9 @@ var RaceSchema = new Schema({
     startDate: Date,
     participants: Number,
     laps: Number,
-    Circuit: {
+    circuit: {
         type: Schema.Types.ObjectId,
-        ref: 'circuit'
+        ref: 'Circuit'
     },
 
 });
