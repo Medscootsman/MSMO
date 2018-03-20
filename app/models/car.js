@@ -6,6 +6,7 @@ var bcrypt 		 = require('bcrypt-nodejs');
 
 var CarSchema = new Schema({
   name: String,
+  weight: {type: Number, required: true},
   gearboxLevel: {type: Number, required: true},
   tyreType: {type: Number, required: true},
   engineLevel: {type: Number, required: true},

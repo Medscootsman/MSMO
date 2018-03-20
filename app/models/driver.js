@@ -4,11 +4,11 @@ var bcrypt 		 = require('bcrypt-nodejs');
 
 //User Schema
 var Driverschema = new Schema({
-  fname: String,
-  sname: String,
+  forename: String,
+  surname: String,
   age: Number,
-  Car: {type: Schema.Types.ObjectId, requred: true; unique: true};
+  car: {type: Schema.Types.ObjectId, requred: true,},
   carLevel: Number,
-});
+})
 
-module.exports("driver", Driverschema);
+module.exports = mongoose.model("Driver", Driverschema);

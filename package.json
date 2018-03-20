@@ -23,7 +23,15 @@
   },
   "homepage": "https://github.com/Medscootsman/MSMO#readme",
   "dependencies": {
-    "express": "^4.16.2",
-    "express-generator": "^4.15.5"
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.18.2",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.16.3",
+    "express-generator": "^4.15.5",
+    "moment": "^2.21.0",
+    "mongodb": "^3.0.2",
+    "mongoose": "^5.0.9",
+    "npm": "^5.7.1",
+    "request": "^2.85.0"
   }
 }
