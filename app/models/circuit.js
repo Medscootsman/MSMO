@@ -1,12 +1,13 @@
 var mongoose     = require('mongoose');
 var Schema       = mongoose.Schema;
 
-var UserSchema = new Schema({
+var CircuitSchema = new Schema({
   name: String,
-  length: Number,
+  laplength: Number,
+  complexity: Number,
   maxPlayers: Number,
   maxLaps: Number,
   Countrycode: Number,
 });
 
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.model('Circuit', UserSchema);

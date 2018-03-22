@@ -217,37 +217,37 @@ router.route('/drivers')
 			}
     });
 	})
-		.post(function(req, res) {
-				var driver = new Driver();
-				var car = new Car();
-				car.name = req.body.name;
-				car.weight = 100 //all cars have a starting weight of x
-				car.gearboxLevel = Math.floor(Math.random() * 5);
-				car.tyreType = 1;
-				car.engineLevel = Math.floor(Math.random() * 5);
-				car.bodyLevel = Math.floor(Math.random() * 5);
+	.post(function(req, res) {
+			var driver = new Driver();
+			var car = new Car();
+			car.name = req.body.name;
+			car.weight = 100 //all cars have a starting weight of x
+			car.gearboxLevel = Math.floor(Math.random() * 5);
+			car.tyreType = 1;
+			car.engineLevel = Math.floor(Math.random() * 5);
+			car.bodyLevel = Math.floor(Math.random() * 5);
 
-				driver.forename = req.body.forename;
-				driver.surname = req.body.surname;
-				driver.age = Math.floor((Math.random() * 20) + 1) + 18;
-				driver.car = car._id;
-				driver.carLevel = 1;
+			driver.forename = req.body.forename;
+			driver.surname = req.body.surname;
+			driver.age = Math.floor((Math.random() * 20) + 1) + 18;
+			driver.car = car._id;
+			driver.carLevel = 1;
 
-				car.save(function(err) {
-					if(err) {
+			car.save(function(err) {
+				if(err) {
+					return res.send(err);
+				}
+			});
+
+			driver.save(function(err) {
+	      if(err) {
 						return res.send(err);
-					}
-				});
-
-				driver.save(function(err) {
-		      if(err) {
-							return res.send(err);
-		      }
-		      //return success message
-					console.log("a new driver called " + driver.forename + " has been registered with the system.");
-					res.send("driver and car created!")
-		    });
-		});
+	      }
+	      //return success message
+				console.log("a new driver called " + driver.forename + " has been registered with the system.");
+				res.send("driver and car created!")
+	    });
+	});
 
 
 //root of the application.

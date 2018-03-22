@@ -7,6 +7,7 @@ var TeamSchema = new Schema({
   driverID: {type : Schema.Types.ObjectId, required: false},
   crewLevel: {type: Number, required: true},
   playerID: {type : Schema.Types.ObjectId, required: true,},
+  cash: Number,
 })
 
 module.exports = mongoose.model('Team', TeamSchema);
