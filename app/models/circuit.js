@@ -3,7 +3,6 @@ var Schema       = mongoose.Schema;
 
 var CircuitSchema = new Schema({
   name: String,
-  laplength: Number,
   complexity: Number,
   maxPlayers: Number,
   maxLaps: Number,

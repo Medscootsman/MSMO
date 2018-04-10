@@ -6,6 +6,7 @@ var RaceSchema = new Schema({
     name: String,
     startDate: Date,
     participants: Number,
+    teams: [Schema.Types.ObjectId],
     laps: Number,
     circuit: {
         type: Schema.Types.ObjectId,
