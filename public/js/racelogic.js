@@ -4,14 +4,11 @@ class Race {
     this.length = length;
     this.complexity = complexity;
     this.laps = laps
-    this.addCar = function(carObj) {
-      this.participants.push(carObj);
-    };
   }
 
   calculateCarEfficiency(car, complexity) {
     //this is all the levels multiplied the divided by the car's weight and complexity of the track.
-    var efficiency = (car.gearboxLevel * car.engineLevel * car.bodyLevel * car.tyreType) / (car.weight) * complexity;
+    var efficiency = (car.gearboxLevel * car.engineLevel * car.bodyLevel * car.tyreType) / (car.weight) * (complexity + length);
     return efficiency;
   }
 
@@ -28,6 +25,10 @@ class Race {
       //reduce the efficiency if a mistake has occured.
       var newEff = eff - (Math.floor(Math.random() * 25));
       return newEff;
+  }
+
+  addParticipant(participant) {
+      this.participants.push(particpant);
   }
 
   doRace() {
@@ -58,7 +59,7 @@ class Race {
         currentlap++;
 }
       //return the winner only for now so we know that it works.
-    return efficiencies[0];
+    return efficiencies;
   }
 }
 

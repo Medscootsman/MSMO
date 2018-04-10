@@ -42,7 +42,6 @@ router.use(function(req, res, next) {
 });
 
 //connect to our Database
-mongoose.connect("mongodb://MLyne:Rhynieman@cluster0-shard-00-00-f4zum.mongodb.net:27017,cluster0-shard-00-01-f4zum.mongodb.net:27017,cluster0-shard-00-02-f4zum.mongodb.net:27017/msmo?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin");
 
 //middleware routing function.
 
@@ -524,11 +523,40 @@ router.route("/races")
 
 router.route("/races/:raceid/addteam/:teamid")
     .put(function (req, res) {
-        Team.findById(req.params.teamid, function(err, team) {
+
+        //find the team first
+        Team.findById(req.params.teamid, function (err, team) {
+
             if (err) return res.send(err);
-            Race.
-        }
-    }
+
+            //then find the race next
+            Race.findById(req.params.raceid, function (err, race) {
+
+                if (err) return res.send(err);
+                race.teams.push(team._id);
+
+                race.save(function (err) {
+                    if (err) {
+                        res.send(err);
+                    }
+                    else {
+                        res.send("team was added to race (" + team.name + ")");
+                    }
+                });
+            });
+        });
+    });
+
+router.route("/races/:raceid/dorace/")
+    .post(function (req, res) {
+        //perform the race and return the winner to all affected parties.
+        Race.findById(req.params.raceid, function (err, race) {
+            //check if today is the day the race occurs.
+            if (race.startDate.getTime() === Date.now()) {
+
+            }
+        };
+    });
 
 //root of the application.
 app.get('/', function(req, res) {
