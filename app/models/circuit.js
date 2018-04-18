@@ -10,4 +10,4 @@ var CircuitSchema = new Schema({
     Countrycode: Number,
 });
 
-module.exports = mongoose.model('Circuit', UserSchema);
+module.exports = mongoose.model('Circuit', CircuitSchema);

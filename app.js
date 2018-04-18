@@ -3,18 +3,19 @@ var path = require('path');
 var mongoose = require('mongoose');
 const app = express();
 var router = express.Router();
-var http = require('http').Server(app);
+var http = require('http')
+var server = http.createServer(app);
 var bodyParser = require("body-parser");
 var User = require('./app/models/user.js');
 var Car = require("./app/models/car.js");
 var Driver = require("./app/models/driver.js");
 var Team = require("./app/models/team.js");
-var RaceLogic = require(".public/js/racelogic.js");
+var RaceLogic = require("./app/models/racelogic.js");
 var Circuit = require("./app/models/circuit.js");
 var Race = require("./app/models/race.js");
 
 //sockets
-var io = require('socket.io')(http);
+var io = require('socket.io').listen(server);
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -42,7 +43,7 @@ router.use(function(req, res, next) {
 });
 
 //connect to our Database
-
+mongoose.connect("mongodb://MLyne:Rhynieman@cluster0-shard-00-00-f4zum.mongodb.net:27017,cluster0-shard-00-01-f4zum.mongodb.net:27017,cluster0-shard-00-02-f4zum.mongodb.net:27017/msmo?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin");
 //middleware routing function.
 
 //USERS
@@ -232,8 +233,8 @@ router.route('/teams/cash/add')
                     res.send("$" + req.params.cash + " was awarded");
                 }
             });
-          
-           
+
+
         });
     });
 
@@ -280,7 +281,7 @@ router.route('/teams/experience')
                     res.send("team was awarded " + req.body.experience + " exp");
                 }
             });
-            
+
         });
     });
 
@@ -488,7 +489,9 @@ router.route('/circuits')
                 res.send("Circuit " + circuit.name + " was added");
             }
         });
-    });
+});
+
+//races
 router.route("/races")
     .get(function (req, res) {
         Race.find(function (err, races) {
@@ -521,6 +524,7 @@ router.route("/races")
         });
     });
 
+//adding teams to races.
 router.route("/races/:raceid/addteam/:teamid")
     .put(function (req, res) {
 
@@ -547,19 +551,33 @@ router.route("/races/:raceid/addteam/:teamid")
         });
     });
 
+//doing the race.
 router.route("/races/:raceid/dorace/")
     .post(function (req, res) {
         //perform the race and return the winner to all affected parties.
         Race.findById(req.params.raceid, function (err, race) {
             //check if today is the day the race occurs.
             if (race.startDate.getTime() === Date.now()) {
-
+                var winner = race.doRace();
             }
-        };
+
+            race.remove(function (err) { //we don't need the race anymore.
+               if(err) {
+                   res.send(err);
+               }
+               else {
+                   res.send("race successful");
+               }
+            });
+        });
     });
 
 //root of the application.
 app.get('/', function(req, res) {
+    res.sendFile(__dirname + "/index.html");
+});
+
+app.get('/portal/*', function (req, res) {
     res.sendFile(__dirname + "/index.html");
 });
 
@@ -571,15 +589,23 @@ app.get('/szechuansauce', function(req, res) {
 		//rick.play();
 });
 
-app.get('/login', function(req, rest) {
+app.get('/login', function(req, res) {
   res.sendFile(__dirname + "/login.html")
 });
 
+app.get('/registration', function (req, res) {
+    res.sendFile(__dirname + "/registration.html")
+});
+
+
 io.on('connection', function (socket) {
     console.log('user has connected');
+    socket.on('send-message', function (data) {
+        io.sockets.emit('new message', data);
+    });
 
 });
 
 app.use("/api", router);
 
-app.listen(3000, () => console.log('MSMO Online'));
+server.listen(3000, () => console.log('MSMO Online'));

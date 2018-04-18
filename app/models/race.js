@@ -1,9 +1,9 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var bcrypt = require('bcrypt-nodejs');
-var RaceLogic = require(".public/js/racelogic.js");
-var Team = require("team.js");
-var Circuit = require('circuit.js');
+var RaceLogic = require("./racelogic.js");
+var Team = require("./team.js");
+var Circuit = require('./circuit.js');
 var RaceSchema = new Schema({
     name: String,
     startDate: Date,
@@ -33,21 +33,23 @@ RaceSchema.methods.doRace = function () {
     for (var i = 0; i < race.teams.length; i++) {
 
         //create objects for each team.
-        Team.findById(race.teams[i], function (err. team) {
+        Team.findById(race.teams[i], function (err, team) {
             racelogic.addParticipant(team);
         });
-
-        var results = racelogic.doRace();
-
-        //get the winning team.
-        var winner = results[0][0];
-
-        //get second place
-        var second = results[1][0];
-        console.log(winner);
-        var third = results[2][0];
-        
     }
+    var results = racelogic.doRace();
+
+    //get the winning team.
+    var winner = results[0][0];
+
+    //get second place
+    var second = results[1][0];
+    console.log(winner);
+    var third = results[2][0];
+
+    var winners = [winner, second, third];
+
+    return winners;
 
 }
 

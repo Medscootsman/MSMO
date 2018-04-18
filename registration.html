@@ -50,10 +50,11 @@
             }
 
         .column {
-            margin-left: 30%;
-            margin-right: 30%;
+            margin-left: 80px;
+            margin-right: 80px;
             margin-top: 20px;
             margin-bottom: 20px;
+
         }
     </style>
 </head>
@@ -63,33 +64,79 @@
         <![endif]-->
 
         <!-- Login screen -->
-        <div class="ui middle aligned center aligned grid">
+        <div class="ui form">
             <div class="column">
-                <h2 class="header">Log into your account</h2>
+                <h2 class="header">Sign up here</h2>
 
-                <form class="ui large form">
-                    <div class="ui stacked segment">
-
+                <form class="ui form">
+                    <div class="ui segment">
+                        <h3>User information</h3>
                         <div class="field">
+                            <label>Username</label>
                             <div class="ui left icon input">
                                 <i class="user icon"></i>
                                 <input type="text" name="username" placeholder="enter your username" />
                             </div>
                         </div>
                         <div class="field">
+                            <label>Password</label>
                             <div class="ui left icon input">
-                                <i class="unlock icon"></i>
-                                <input type="password" name="password" placeholder="enter your password here" />
+                                <i class="lock icon"></i>
+                                <input type="password" name="password" placeholder="enter your password" />
                             </div>
                         </div>
-                        <div class="ui fluid large teal submit button">Login</div>
+
+                        <div class="field">
+                            <label>Conifrm Password</label>
+                            <div class="ui left icon input">
+                                <i class="unlock icon"></i>
+                                <input type="password" name="confirmpassword" placeholder="Confirm your password" />
+                            </div>
+                        </div>
+
+                        <h3>Roleplay Information</h3>
+
+                        <div class="field">
+                            <label>Person Name</label>
+                            <div class="ui left icon input">
+                                <i class="id card icon"></i>
+                                <input type="text" name="personname" placeholder="enter the name of your manager" />
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label>Team Name</label>
+                            <div class="ui left icon input">
+                                <i class="car icon"></i>
+                                <input type="text" name="teamname" placeholder="enter the name of your team" />
+                            </div>
+                        </div>
+
+                        <h4>driver name</h4>
+
+                        <div class="fields">
+                            <div class="field">
+                                <label>Forename</label>
+                                <div class="ui left icon input">
+                                    <i class="male icon"></i>
+                                    <input type="text" name="username" placeholder="First name of your driver" />
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <label>Surname</label>
+                                <div class="ui left icon input">
+                                    <i class="male icon"></i>
+                                    <input type="text" name="username" placeholder="Last name of your driver" />
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <button class="ui fluid large teal submit button">Submit</button>
                     </div>
                     <div class="ui error message"></div>
                 </form>
-
-                <div class="ui message">
-                    New to MSMO? <a href="/Registration">Sign up here!</a>
-                </div>
 
             </div>
         </div>

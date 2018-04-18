@@ -1,0 +1,35 @@
+﻿<style type="text/css">
+    #chat {
+        max-width: 500px;
+        height: 500px;
+    }
+</style>
+
+<div id="chat"></div>
+<div class="ui form">
+    <form id="send-message">
+        <div class="inline fields">
+            <input type="text" style="max-width:200px" id="message" placeholder="message" />
+            <button class="ui primary button">send</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    jQuery(function ($) {
+        var socket = io.connect();
+        var message = $('#message');
+        var form = $('#send-message');
+        var chat = $('#chat');
+
+        form.submit(function (e) {
+            e.preventDefault();
+            socket.emit('send-message', message.val());
+            message.val('');
+        });
+        socket.on('new message', function (data) {
+            chat.append(data + "<br/>");
+        });
+            
+    });
+</script>

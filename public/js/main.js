@@ -1,12 +1,33 @@
-//ANGULAR CODE
-//quick test for angular i coded up. I'll leave it here incase i need to add things.
-var app1 = angular.module("app1", []);
+//app1 controller code
+angular.module('portalrouter', ['routerRoutes'])
 
-app1.controller('test', function($scope) {
-    $scope.first = 1;
-    $scope.second = 1;
+    .controller('mainController', function () {
+        var vm = this;
+    })
 
-    $scope.update = function() {
-        $scope.calculation = $scope.first + "+" + $scope.second + " = " + (+$scope.first + +$scope.second) + " QUIK MATHS";
-    }
-});
+    .controller('leaderController', function () {
+        var vm = this;
+    })
+
+    .controller('chatController', function () {
+        var vm = this;
+    })
+    .controller('marketController', function () {
+        var vm = this;
+    })
+    .controller('raceController', function () {
+        var vm = this;
+    })
+    .controller('managementController', function () {
+        var vm = this;
+    })
+    .controller('logon', function ($scope) {
+        $scope.username = "";
+        $scope.password = "";
+
+        $scope.submit = function () {
+            //make an API call here i guess.
+        }
+    });
+
+

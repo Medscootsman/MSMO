@@ -33,7 +33,7 @@ class Race {
 
   doRace() {
     var currentlap = 0;
-    var efficiencies[];
+    var efficiencies = [];
     while (currentlap < this.laps) {
         efficiencies = [];
         for (var i = 0; i < participants.length; i++) {
