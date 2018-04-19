@@ -9,6 +9,7 @@ var Driverschema = new Schema({
   age: Number,
   car: {type: Schema.Types.ObjectId, requred: true,},
   carLevel: Number,
+  cost: Number,
 })
 
 module.exports = mongoose.model("Driver", Driverschema);

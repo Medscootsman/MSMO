@@ -1,17 +1,20 @@
 ﻿<h3>Leaderboards</h3>
 
-<h4>Here is the top players at the moment</h4>
+<h4>Here is the top teams at the moment</h4>
 
 <table class="ui celled padded table">
     <thead>
         <tr>
-            <th>Manager</th>
             <th>Team Name</th>
-            <th>Driver</th>
             <th>Experience</th>
+            <th>Crew Level</th>
         </tr>
     </thead>
     <tbody>
-
+        <tr ng-repeat="team in leader.teamdata | orderBy:'-experience'">
+            <th>{{team.name}}</th>
+            <th>{{team.experience}}</th>
+            <th>{{team.crewLevel}}</th>
+        </tr>
     </tbody>
 </table>

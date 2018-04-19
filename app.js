@@ -266,6 +266,7 @@ router.route('/teams/cash/purchase')
 
         });
     });
+
 router.route('/teams/experience')
     .put(function (req, res) {
         Team.findById(req.body.teamid, function (err, team) {
@@ -437,7 +438,8 @@ router.route('/drivers')
 			driver.surname = req.body.surname;
 			driver.age = Math.floor((Math.random() * 20) + 1) + 18;
 			driver.car = car._id;
-			driver.carLevel = 1;
+            driver.carLevel = 1;
+            driver.cost = Math.floor((Math.random() * 0.6);
 
 			car.save(function(err) {
 				if(err) {
