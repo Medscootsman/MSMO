@@ -17,7 +17,7 @@ var RaceSchema = new Schema({
 
 });
 
-mongoose.connect("mongodb://MLyne:Rhynieman@cluster0-shard-00-00-f4zum.mongodb.net:27017,cluster0-shard-00-01-f4zum.mongodb.net:27017,cluster0-shard-00-02-f4zum.mongodb.net:27017/msmo?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin");
+mongoose.connect("mongodb://Medscootsman:Rhynieman@ds014578.mlab.com:14578/msmo");
 
 RaceSchema.methods.doRace = function () {
     var race = this;

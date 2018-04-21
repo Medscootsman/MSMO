@@ -10,5 +10,13 @@ angular.module('userService', [])
             return $http.get('/api/users/' + id);
         };
 
+        user.delete = function (id) {
+            return $http.delete('api/users/' + id);
+        };
+
+        user.all = function () {
+            return $http.get('api/users/');
+        };
+
         return user;
     });

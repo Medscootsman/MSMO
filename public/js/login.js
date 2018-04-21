@@ -1,10 +1,11 @@
-var login = angular.module("app1", []);
+var login = angular.module("login", ["userService", "authService"]);
 
-login.controller('login', function ($scope) {
-    $scope.username = "";
-    $scope.password = "";
+login.controller('login', function (User) {
+    var vm = this;
+    vm.username = "";
+    vm.password = "";
 
     $scope.submit = function () {
-        //make an API call here i guess.
+        //authenticate the user
     }
 });

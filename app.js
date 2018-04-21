@@ -1,4 +1,4 @@
-const express = require('express');
+var express = require('express');
 var path = require('path');
 var mongoose = require('mongoose');
 const app = express();
@@ -13,7 +13,9 @@ var Team = require("./app/models/team.js");
 var RaceLogic = require("./app/models/racelogic.js");
 var Circuit = require("./app/models/circuit.js");
 var Race = require("./app/models/race.js");
+var jwt = require("jsonwebtoken");
 
+var supersecret = "Mikeisatraitor"; //token secret,
 //sockets
 var io = require('socket.io').listen(server);
 
@@ -36,14 +38,8 @@ router.get('/', function(req, res) {
 //use the public files.
 app.use(express.static('public'));
 
-router.use(function(req, res, next) {
-  console.log("Request type " + req.method + " detected. \n IP: " +
-							req.ip + "\n route: " + req.originalUrl);
-  next();
-});
-
 //connect to our Database
-mongoose.connect("mongodb://MLyne:Rhynieman@cluster0-shard-00-00-f4zum.mongodb.net:27017,cluster0-shard-00-01-f4zum.mongodb.net:27017,cluster0-shard-00-02-f4zum.mongodb.net:27017/msmo?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin");
+mongoose.connect("mongodb://Medscootsman:Rhynieman@ds014578.mlab.com:14578/msmo");
 //middleware routing function.
 
 //USERS
@@ -439,7 +435,7 @@ router.route('/drivers')
 			driver.age = Math.floor((Math.random() * 20) + 1) + 18;
 			driver.car = car._id;
             driver.carLevel = 1;
-            driver.cost = Math.floor((Math.random() * 0.6);
+            driver.cost = Math.floor((Math.random() * 0.6));
 
 			car.save(function(err) {
 				if(err) {
@@ -574,6 +570,57 @@ router.route("/races/:raceid/dorace/")
         });
     });
 
+//authentication.
+router.route("/auth")
+    .post(function (req, res) {
+        User.findOne({
+            username: req.body.username
+        }).select('personName username password').exec(function (err, user) {
+            if (err) throw err;
+
+            //check if a user is present
+            if (!user) {
+                res.json({
+                    success: false,
+                    message: "username or password was incorrect",
+                });
+            } else if (user) {
+
+                //password check
+                var validpassword = user.comparePassword(req.body.password);
+                if (!validpassword) {
+                    res.json({
+                        success: false,
+                        message: "username or password was incorrect",
+                    });
+                } else {
+                    //if user was found, and the password is correct, give the client a token.
+                    var token = jwt.sign({
+
+                        name: user.personName,
+                        username: user.username,
+
+                    }, supersecret, {
+
+                            expiresIn: '24h',
+
+                        });
+
+                    //return the token
+                    res.json({
+
+                        success: true,
+                        message: "token created",
+                        token: token,
+
+                    });
+
+                }
+            }
+        });
+    });
+
+
 //root of the application.
 app.get('/', function(req, res) {
     res.sendFile(__dirname + "/index.html");
@@ -606,6 +653,42 @@ io.on('connection', function (socket) {
         io.sockets.emit('new message', data);
     });
 
+});
+
+//router usage. Log when it is about to be used.
+router.use(function (req, res, next) {
+
+    console.log("A user has logged on");
+
+    //check to see if the token is in the parameters, body or in the header.
+    var token = req.body.token || req.query.token || req.headers["x-access-token"] || req.params.token;
+
+    //decode the token we get.
+    if (token) {
+        //verifies the token
+        jwt.verify(token, supersecret, function (err, decoded) {
+            if (err) {
+                return res.json({
+                    success: false,
+                    message: "Failed to authenticate token",
+                });
+            }
+            else {
+                //if all good say it is decoded.
+                req.decoded = decoded;
+                console.log("Request type " + req.method + " detected. \n IP: " +
+                    req.ip + "\n route: " + req.originalUrl);
+                next();
+            }
+        });
+    }
+    else {
+        return res.status(403).send({
+            success: false,
+            message: "No token provided"
+        });
+    }
+    
 });
 
 app.use("/api", router);
