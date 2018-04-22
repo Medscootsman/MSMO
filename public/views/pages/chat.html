@@ -8,16 +8,29 @@
 <div id="chat"></div>
 <div class="ui form">
     <form id="send-message">
-        <div class="inline fields">
+        <div class="inline fields" id="messagediv">
             <input type="text" style="max-width:200px" id="message" placeholder="message" />
             <button class="ui primary button">send</button>
         </div>
     </form>
+    <form id="set-nick">
+        <div class="inline fields" id="nicknamediv">
+            <input type="text" style="max-width: 50%" id="nickname" />
+            <button class="ui primary button" type="submit" id="nickbox">set nickname</button>
+            <p id="error"></p>
+
+        </div>
+    </form>
+    <div id="users">
+        <h5>Chatroom members</h5>
+    </div>
 </div>
 
 <script>
+    $('#messagediv').hide();
+    var username = "";
     jQuery(function ($) {
-        var socket = io.connect();
+        var socket = io();
         var message = $('#message');
         var form = $('#send-message');
         var chat = $('#chat');
@@ -28,8 +41,31 @@
             message.val('');
         });
         socket.on('new message', function (data) {
-            chat.append(data + "<br/>");
+            chat.append('<div class="ui message"><strong>' + data.nick + '</strong>: ' + data.msg + "</div>");
+                
         });
             
     });
+    $('#nickbox').click(function (e) {
+        e.preventDefault();
+        socket.emit('new user', $('#nickname').val(), function (data) {
+            if (data) {
+                $('#nicknamediv').hide();
+                $('#messagediv').show();
+            } else {
+                $('#error').val('Name already taken');
+            }
+        });
+        $('#nickname').val('');
+    });
+    socket.on('username', function(data) {
+        var html = "";
+        console.log(data);
+        for (i = 0; i < data.length; i++) {
+            html += data[i] + "<br/>";
+            $('#users').append(html);
+        }
+    });
+        
+
 </script>

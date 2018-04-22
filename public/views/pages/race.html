@@ -1,7 +1,21 @@
-<h3>Leaderboards</h3>
+<h3>Races</h3>
 
-<h4>Here is the top players at the moment</h4>
+<h4>You can join races here</h4>
 
 <table class="ui celled padded table">
-<!-- joinable races are created here-->
+    <thead>
+        <tr>
+            <th>Race</th>
+            <th>Laps</th>
+            <th>Max Players</th>
+            <th>Join Race</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="race in race.racedata">
+            <th>{{race.name}}</th>
+            <th>{{race.laps}}</th>
+            <th>{{race.participants}}</th>
+        </tr>
+    </tbody>
 </table>

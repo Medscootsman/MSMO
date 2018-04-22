@@ -18,14 +18,18 @@ angular.module('portalrouter', ['routerRoutes', 'teamService', 'userService'])
             });
     })
 
-    .controller('chatController', function () {
-        var vm = this;
+    .controller('chatController', function (Races) {
+                var vm = this;
     })
     .controller('marketController', function () {
         var vm = this;
     })
     .controller('raceController', function () {
         var vm = this;
+        Races.all()
+            .then(function (res) {
+                vm.racedata = res.data;
+            });
     })
     .controller('managementController', function () {
         var vm = this;

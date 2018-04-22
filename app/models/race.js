@@ -17,7 +17,7 @@ var RaceSchema = new Schema({
 
 });
 
-mongoose.connect("mongodb://Medscootsman:Rhynieman@ds014578.mlab.com:14578/msmo");
+mongoose.connect("mongodb://localhost:27017/msmo");
 
 RaceSchema.methods.doRace = function () {
     var race = this;

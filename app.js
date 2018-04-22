@@ -15,6 +15,8 @@ var Circuit = require("./app/models/circuit.js");
 var Race = require("./app/models/race.js");
 var jwt = require("jsonwebtoken");
 
+var chatnicks = [];
+
 var supersecret = "Mikeisatraitor"; //token secret,
 //sockets
 var io = require('socket.io').listen(server);
@@ -39,7 +41,7 @@ router.get('/', function(req, res) {
 app.use(express.static('public'));
 
 //connect to our Database
-mongoose.connect("mongodb://Medscootsman:Rhynieman@ds014578.mlab.com:14578/msmo");
+mongoose.connect("mongodb://localhost:27017/msmo");
 //middleware routing function.
 
 //USERS
@@ -573,11 +575,12 @@ router.route("/races/:raceid/dorace/")
 //authentication.
 router.route("/auth")
     .post(function (req, res) {
+        
         User.findOne({
             username: req.body.username
         }).select('personName username password').exec(function (err, user) {
             if (err) throw err;
-
+            
             //check if a user is present
             if (!user) {
                 res.json({
@@ -588,6 +591,7 @@ router.route("/auth")
 
                 //password check
                 var validpassword = user.comparePassword(req.body.password);
+                
                 if (!validpassword) {
                     res.json({
                         success: false,
@@ -648,9 +652,31 @@ app.get('/registration', function (req, res) {
 
 
 io.on('connection', function (socket) {
-    console.log('user has connected');
+
+    socket.on('new user', function (data, callback) {
+
+        if (chatnicks.indexOf(data) != -1) {
+            callback(false);
+        } else {
+            callback(true);
+            socket.username = data;
+            chatnicks.push(socket.username);
+            io.sockets.emit('username', chatnicks);
+        }
+    });
+
     socket.on('send-message', function (data) {
-        io.sockets.emit('new message', data);
+        console.log(data);
+        io.sockets.emit('new message', {msg: data, nick: "Person"});
+    });
+
+    socket.on('disconnect', function (data) {
+        console.log("disconnected");
+        if (!socket.username) return;
+
+        chatnicks.splice(chatnicks.indexOf(socket.username));
+
+        io.sockets.emit('username', chatnicks);
     });
 
 });
