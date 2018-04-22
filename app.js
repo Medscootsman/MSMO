@@ -112,7 +112,7 @@ router.route('/teams')
 				team.experience = 0;
 				team.driverID = req.body.dID;
 				team.crewLevel = 1;
-                team.playerID = req.body.pID;
+                team.username = req.body.username;
                 team.cash = 0;
 
 				team.save(function(err) {
@@ -175,16 +175,32 @@ router.route('/teams')
 	});
 
 
-//get the team
-router.route('teams/:playerid')
-	.get(function(req, res) {
-		Team.find({playerID: req.params.playerid}, function(err, team) {
+//get a team
+router.route('/teams/find')
+	.post(function(req, res) {
+        Team.findOne({
+            username: req.body.username,
+        }).exec(function(err, team) {
 			if(err) return res.send("team was not found");
 
 			//otherwise, return the team.
-			res.send(team);
+			res.json(team);
 		})
-	});
+    });
+
+//get a car
+router.route('/driver/find')
+    .post(function (req, res) {
+        Driver.findById(req.body.did, function (err, driver) {
+            if (err) return res.send("driver was not found");
+
+            //otherwise, return the team.
+            console.log(driver);
+            res.json(driver);
+        })
+    });
+
+
 
 //get specific User
 router.route('/users/:userid')
@@ -206,21 +222,22 @@ router.route('/users/:userid')
 });
 
 router.route('/user/:username')
-.get(function(req, res) {
-	User.find({username: req.params.username}, function(err, user) {
-		if (err) return res.send("User was not found");
+    .get(function (req, res) {
+        User.find({ username: req.params.username }, function (err, user) {
+            if (err) return res.send("User was not found");
 
-		// return that user
-		res.json(user);
-	});
+            // return that user
+            res.json(user);
+        });
     });
-
 router.route('/teams/cash/add')
     .put(function (req, res) {
-        Team.findById(req.body.teamid, function (err, team) {
+        Team.findOne({
+            username: req.body.username,
+        }).select('cash').exec(function (err, team) {
             if (err) return res.send("Team was not found");
-
-            team.cash += req.params.reward;
+     
+            team.cash += req.body.reward;
 
             team.save(function (err) {
                 if (err) {
@@ -228,19 +245,22 @@ router.route('/teams/cash/add')
                 }
 
                 else {
-                    res.send("$" + req.params.cash + " was awarded");
+                    res.json({
+                        success: true,
+                        message: "Award given: £" + req.body.reward,
+                    })
                 }
             });
-
-
         });
+
     });
 
 router.route('/teams/cash/purchase')
     .post(function (req, res) {
-        Team.findById(req.body.teamid, function (err, team) {
-            if (err) return res.send("Team was not found");
-
+        Team.findOne({
+            username: req.body.username,
+        }).select('cash').exec(function (err, team) {
+            if (err) return res.send("team was not found");
             //check if the team has enough money.
             var deduction = team.cash - req.body.itemCost;
 
@@ -257,12 +277,14 @@ router.route('/teams/cash/purchase')
                 }
 
                 else {
-                    res.send("Purchase successful");
+                    res.json({
+                        success: true,
+                        message: "purchase successful",
+                    });
                 }
             });
-
-
         });
+
     });
 
 router.route('/teams/experience')
@@ -287,12 +309,14 @@ router.route('/teams/experience')
 //Upgrading the team's level.
 router.route('/teams/upgrade/crew')
     .put(function (req, res) {
-        Team.findById(req.body.teamid, function (err, team) {
+        Team.findOne({
+            username : req.body.username
+        }).select('crewLevel').exec(function(err, team) {
             if (err) return res.send("Team was not found");
 
             team.crewLevel += 1;
 
-            car.save(function (err) {
+            team.save(function (err) {
                 if (err) {
                     return res.send(err);
                 }
@@ -309,7 +333,7 @@ router.route('/cars/upgrade/gearbox')
     .put(function (req, res) {
         Car.findById(req.body.carid, function (err, car) {
             if (err) return res.send("Car was not found");
-
+            console.log(JSON.stringify(car));
             car.gearboxLevel += 1;
 
             car.save(function (err) {
@@ -551,6 +575,13 @@ router.route("/races/:raceid/addteam/:teamid")
         });
     });
 
+router.route("/token/:token")
+    .get(function (req, res) {
+        jwt.verify(req.params.token, supersecret, function (err, decoded) {
+            res.send(decoded);
+        });
+    });
+
 //doing the race.
 router.route("/races/:raceid/dorace/")
     .post(function (req, res) {
@@ -603,6 +634,7 @@ router.route("/auth")
 
                         name: user.personName,
                         username: user.username,
+                        id: user._id,
 
                     }, supersecret, {
 
@@ -642,10 +674,6 @@ app.get('/szechuansauce', function(req, res) {
 		//rick.play();
 });
 
-app.get('/login', function(req, res) {
-  res.sendFile(__dirname + "/login.html")
-});
-
 app.get('/registration', function (req, res) {
     res.sendFile(__dirname + "/registration.html")
 });
@@ -666,8 +694,7 @@ io.on('connection', function (socket) {
     });
 
     socket.on('send-message', function (data) {
-        console.log(data);
-        io.sockets.emit('new message', {msg: data, nick: "Person"});
+        io.sockets.emit('new message', {msg: data.msg, nick: data.nick});
     });
 
     socket.on('disconnect', function (data) {
@@ -716,7 +743,6 @@ router.use(function (req, res, next) {
     }
     
 });
-
 app.use("/api", router);
 
 server.listen(3000, () => console.log('MSMO Online'));

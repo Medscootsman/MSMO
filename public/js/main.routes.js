@@ -11,6 +11,14 @@ angular.module('routerRoutes', ['ngRoute'])
                 controllerAs: 'main'
             })
 
+            .when('/portal/login', {
+
+                //base page
+                templateUrl: 'views/pages/login.html',
+                controller: 'mainController',
+                controllerAs: 'main'
+            })
+
             //leaderboard page
             .when('/portal/leaderboard', {
                 templateUrl: 'views/pages/leaderboard.html',

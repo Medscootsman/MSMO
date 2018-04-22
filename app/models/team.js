@@ -6,7 +6,7 @@ var TeamSchema = new Schema({
   experience: {type: Number, required: true},
   driverID: {type : Schema.Types.ObjectId, required: false},
   crewLevel: {type: Number, required: true},
-  playerID: {type : Schema.Types.ObjectId, required: true,},
+  username: {type : String, required: true, unique: true},
   cash: Number,
 })
 
