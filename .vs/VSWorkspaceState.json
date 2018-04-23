@@ -4,8 +4,11 @@
     "\\app",
     "\\app\\models",
     "\\public",
-    "\\public\\js"
+    "\\public\\img",
+    "\\public\\js",
+    "\\public\\views",
+    "\\public\\views\\pages"
   ],
-  "SelectedNode": "\\app\\models\\racelogic.js",
+  "SelectedNode": "\\public\\js\\userService.js",
   "PreviewInSolutionExplorer": false
 }

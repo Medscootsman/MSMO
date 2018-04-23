@@ -34,6 +34,7 @@ angular.module('teamService', [])
 
         //this gets everything
         purchase.buy = function (givenusername, givencost, giventoken) {
+
             return $http.post('api/teams/cash/purchase', {
                 username: givenusername,
                 itemCost: givencost,
@@ -73,6 +74,8 @@ angular.module('teamService', [])
         return find;
     })
 
+    //upgrades
+
     .factory('CrewUpgrade', function ($http) {
         var upgrade = {};
 
@@ -97,7 +100,9 @@ angular.module('teamService', [])
         return upgrade;
     })
 
-    .factory('EngineUpgrade', function ($http) {
+    //upgrades
+
+    .factory('GearboxUpgrade', function ($http) {
         var upgrade = {};
 
         upgrade.buy = function (givenid, giventoken) {
@@ -133,7 +138,47 @@ angular.module('teamService', [])
         return upgrade;
     })
 
-    //purchase something from the server.
+    .factory('Car', function ($http) {
+        var car = {};
+
+        car.get = function (givenid, token) {
+
+
+            return $http.get('api/cars/' + givenid, {
+
+                //set the header 
+                headers: {
+                    'Authorization': token,
+                }
+            });
+        }
+        return car;
+    })
+
+    .factory("doRace", function ($http) {
+        var race = {};
+
+        race.do = function () {
+        }
+
+        return race;
+    })
+
+    .factory("Practice", function ($http) {
+
+        var practice = {};
+
+        //Give the user a small amount of experience for doing a practice.
+        practice.do = function(id, exp, giventoken) {
+            return $http.put('/api/teams/experience', {
+                teamid: id,
+                experience: exp,
+                token: giventoken
+            });
+        }
+
+        return practice;
+    })
 
     .factory('Circuits', function ($http) {
 

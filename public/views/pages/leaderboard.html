@@ -7,14 +7,14 @@
         <tr>
             <th>Team Name</th>
             <th>Experience</th>
-            <th>Crew Level</th>
+            <th>Cash</th>
         </tr>
     </thead>
     <tbody>
-        <tr ng-repeat="team in leader.teamdata track by $name">
+        <tr ng-repeat="team in leader.teamdata track by $name| orderBy:'-cash'">
             <th>{{team.name}}</th>
             <th>{{team.experience}}</th>
-            <th>{{team.crewLevel}}</th>
+            <th>{{team.cash}}</th>
         </tr>
     </tbody>
 </table>

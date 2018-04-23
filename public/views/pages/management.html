@@ -1,17 +1,36 @@
-﻿<h3>Leaderboards</h3>
+<h3>You can see your team information here</h3>
 
-<h4>Here is the top players at the moment</h4>
-
+<h1>Your Team, {{user}} </h1>
+<h2>Team name: {{teamdata.name}}</h2>
 <table class="ui celled padded table">
     <thead>
         <tr>
-            <th>Manager</th>
-            <th>Team Name</th>
-            <th>Driver</th>
-            <th>Experience</th>
+            <th>crewLevel</th>
+            <th>cash</th>
+            <th>experience</th>
         </tr>
     </thead>
     <tbody>
+        <tr>
+            <th>{{teamdata.crewLevel}}</th>
+            <th>{{teamdata.cash}}</th>
+            <th>{{teamdata.experience}}</th>
+        </tr>
+    </tbody>
+</table>
 
+<h2>Car</h2>
+<table class="ui celled padded table">
+    <thead>
+        <tr>
+            <th>Car name</th>
+            <th>body Level</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>{{cardata.name}}</th>
+            <th>{{cardata.bodyLevel}}</th>
+        </tr>
     </tbody>
 </table>

@@ -1,21 +1,14 @@
 <h3>Races</h3>
 
-<h4>You can join races here</h4>
+<p>To join a race, click the join button</p>
 
-<table class="ui celled padded table">
-    <thead>
-        <tr>
-            <th>Race</th>
-            <th>Laps</th>
-            <th>Max Players</th>
-            <th>Join Race</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr ng-repeat="race in race.racedata">
-            <th>{{race.name}}</th>
-            <th>{{race.laps}}</th>
-            <th>{{race.participants}}</th>
-        </tr>
-    </tbody>
-</table>
+<div class="ui buttons">
+    <button class="ui positive button">Join race</button>
+    <div class="or"></div>
+    <button class="ui button">Cancel race</button>
+</div>
+<div id="totalParticipants"></div>
+
+<h4>Practice</h4>
+<button ng-click="practiceRace()" class="ui neutral button">Practice Race</button>
+<p>{{success}}</p>

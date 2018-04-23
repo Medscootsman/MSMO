@@ -27,7 +27,7 @@ class Race {
       return newEff;
   }
 
-  addParticipant(participant) {
+ join(participant) {
       this.participants.push(particpant);
   }
 

@@ -1,6 +1,7 @@
 ﻿<div class="ui form">
     <h3>Upgrades</h3>
     <h4>Upgrade your stuff here</h4>
+    <p>{{upgradesuccess}}</p>
 
     <div class="ui items" style="margin-left:5%; margin-right:5%;">
         <div class="item">
@@ -30,7 +31,7 @@
                 </div>
                 <div class="description">
                     <p>Upgrade your body level</p>
-                    <button class="ui fluid large teal submit button">Upgrade</button>
+                    <button class="ui fluid large teal submit button" ng-click="upgradeBody()">Upgrade</button>
                 </div>
             </div>
         </div>
@@ -46,7 +47,7 @@
                 </div>
                 <div class="description">
                     <p>Upgrade your engine level</p>
-                    <button class="ui fluid large teal submit button">Upgrade</button>
+                    <button class="ui fluid large teal submit button" ng-click="upgradeEngine()">Upgrade</button>
                 </div>
             </div>
         </div>
@@ -78,7 +79,7 @@
                 </div>
                 <div class="description">
                     <p>Upgrade your tyre level</p>
-                    <button class="ui fluid large teal submit button">Upgrade</button>
+                    <button class="ui fluid large teal submit button" ng-click="upgradeTyre()">Upgrade</button>
                 </div>
             </div>
         </div>

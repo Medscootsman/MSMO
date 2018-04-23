@@ -15,7 +15,11 @@ var Circuit = require("./app/models/circuit.js");
 var Race = require("./app/models/race.js");
 var jwt = require("jsonwebtoken");
 
+//old chatnick array i was planning to use.
 var chatnicks = [];
+
+var teamids = [];
+race = new RaceLogic(10, 2, 3);
 
 var supersecret = "Mikeisatraitor"; //token secret,
 //sockets
@@ -269,8 +273,10 @@ router.route('/teams/cash/purchase')
                 return res.send("You do not have enough money for that item.");
             }
 
-            team.cash - req.body.itemCost;
-
+            console.log(req.body.itemCost);
+            console.log(team.cash);
+            team.cash = team.cash - req.body.itemCost;
+            console.log(team.cash);
             team.save(function (err) {
                 if (err) {
                     return res.send(err);
@@ -328,12 +334,22 @@ router.route('/teams/upgrade/crew')
         });
     });
 
+//CARS (Getting just one);
+
+router.route('/cars/:carID')
+    .get(function (req, res) {
+        Car.findById(req.params.carID, function (err, car) {
+            if (err) return (err);
+            res.json(car);
+        });
+    });
+
 //CARS (UPGRADES)
 router.route('/cars/upgrade/gearbox')
     .put(function (req, res) {
         Car.findById(req.body.carid, function (err, car) {
             if (err) return res.send("Car was not found");
-            console.log(JSON.stringify(car));
+            
             car.gearboxLevel += 1;
 
             car.save(function (err) {
@@ -450,7 +466,7 @@ router.route('/drivers')
 			var driver = new Driver();
 			var car = new Car();
 			car.name = req.body.name;
-			car.weight = 100 //all cars have a starting weight of x
+			car.weight = 100 //all cars have a starting weight of 100
 			car.gearboxLevel = Math.floor(Math.random() * 5);
 			car.tyreType = 1;
 			car.engineLevel = Math.floor(Math.random() * 5);
@@ -706,6 +722,15 @@ io.on('connection', function (socket) {
         io.sockets.emit('username', chatnicks);
     });
 
+    socket.on('Race-Start', function (data) {
+
+    });
+
+    socket.on('join-race', function (data) {
+        race.join(data);
+        io.sockets.emit('race-joined', data.name);
+    }
+
 });
 
 //router usage. Log when it is about to be used.
@@ -745,4 +770,4 @@ router.use(function (req, res, next) {
 });
 app.use("/api", router);
 
-server.listen(3000, () => console.log('MSMO Online'));
+server.listen(3000, () => console.log('MSMO Online on port 3000'));

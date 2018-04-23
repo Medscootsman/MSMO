@@ -9,6 +9,25 @@ angular.module('portalrouter', ['routerRoutes', 'authService', 'teamService', 'u
         $scope.test = 1;
         $scope.loggedin = Auth.isLoggedIn();
 
+        if ($scope.loggedin) {
+            $scope.logstate = "logout";
+        }
+        else {
+            if (!window.location == '/portal/login') {
+                window.location = '/portal/login';
+            }
+            $scope.logstate = "login";
+        }
+
+        // function to handle logging out
+        $scope.doLogout = function () {
+            Auth.logout();
+            //vm.user = '';
+            $scope.user = {};
+
+            window.location = '/portal/login';
+        };
+
         $scope.loginuser = function () {
 
             Auth.login($scope.username, $scope.password)
@@ -19,6 +38,8 @@ angular.module('portalrouter', ['routerRoutes', 'authService', 'teamService', 'u
                     console.log("Auth detected");
                     if (data.data.success) {
                         window.location.href = "../";
+                        $scope.log = "/"
+                        $scope.logstate = "logout";
                     }
                     else {
                         $scope.error = data.data.message;
@@ -48,7 +69,7 @@ angular.module('portalrouter', ['routerRoutes', 'authService', 'teamService', 'u
                         window.location.href = "portal/login";
                     }
                     $scope.user = response.data.username;
-                });
+                }).catch(angular.noop);
 
         });
 
@@ -77,12 +98,10 @@ angular.module('portalrouter', ['routerRoutes', 'authService', 'teamService', 'u
                 vm.user = response.data.username;
             });
     })
-    .controller('marketController', function (Purchase, AuthToken, $scope, Auth, CrewUpgrade, GearboxUpgrade, FindTeam, FindDriver) {
+    .controller('marketController', function (Purchase, Practice, AuthToken, $scope, Auth, CrewUpgrade, GearboxUpgrade, EngineUpgrade, TyreUpgrade, BodyUpgrade, FindTeam, FindDriver) {
         $scope.bodyPrice = 800;
         $scope.enginePrice = 640;
         $scope.gearboxPrice = 640;
-        $scope.tyrePrice = 100;
-        $scope.crewPrice = 300;
     
         Auth.getUser()
             .then(function (response) {
@@ -103,24 +122,70 @@ angular.module('portalrouter', ['routerRoutes', 'authService', 'teamService', 'u
                         console.log(data);
                         $scope.car = data.data.car;
                         
-
+                        //crew
                         $scope.upgradeCrew = function () {
                             console.log(1);
-                            Purchase.buy($scope.user, $scope.crewPrice, $scope.token)
+                            Purchase.buy($scope.user, 300, $scope.token)
                                 .then(function (response) {
                                     CrewUpgrade.buy($scope.user, $scope.token)
                                         .then(function (response) {
+                                            $scope.upgradesuccess = "You have upgraded your crew efficiency by 1";
                                         });
                                 });
                         }
+
+                        //gearbox
                         $scope.upgradeGearBox = function () {
 
                             Purchase.buy($scope.user, $scope.gearboxPrice, $scope.token)
                                 .then(function (response) {
-                                    console.log($scope.car);
+
                                     GearboxUpgrade.buy($scope.car, $scope.token)
                                         .then(function (response) {
                                             console.log("it works");
+                                            $scope.upgradesuccess = "You have upgraded your gearbox by 1";
+                                        });
+                                });
+                        }
+
+                        //body
+                        $scope.upgradeBody = function () {
+
+                            Purchase.buy($scope.user, $scope.gearboxPrice, $scope.token)
+                                .then(function (response) {
+
+                                    BodyUpgrade.buy($scope.car, $scope.token)
+                                        .then(function (response) {
+                                            console.log("it works");
+                                            $scope.upgradesuccess = "You have upgraded your body by 1";
+                                        });
+                                });
+                        }
+
+                        //engine
+                        $scope.upgradeEngine = function () {
+
+                            Purchase.buy($scope.user, $scope.gearboxPrice, $scope.token)
+                                .then(function (response) {
+
+                                    EngineUpgrade.buy($scope.car, $scope.token)
+                                        .then(function (response) {
+                                            console.log("it works");
+                                            $scope.upgradesuccess = "You have upgraded your engine by 1";
+                                        });
+                                });
+                        }
+
+                        //Tyre
+                        $scope.upgradeTyre = function () {
+
+                            Purchase.buy($scope.user, 100, $scope.token)
+                                .then(function (response) {
+
+                                    TyreUpgrade.buy($scope.car, $scope.token)
+                                        .then(function (response) {
+                                            console.log("it works");
+                                            $scope.upgradesuccess = "You have upgraded your tyre by 1";
                                         });
                                 });
                         }
@@ -129,15 +194,57 @@ angular.module('portalrouter', ['routerRoutes', 'authService', 'teamService', 'u
 
     })
     
-    .controller('raceController', function (Races) {
-        var vm = this;
-        Races.all()
-            .then(function (res) {
-                vm.racedata = res.data;
+    .controller('raceController', function ($scope, Practice, FindTeam, Auth, AuthToken, doRace) {
+        Auth.getUser()
+            .then(function (response) {
+                if (!response) {
+                    window.location.href = "portal/login";
+                }
+                $scope.user = response.data.username;
             });
+        $scope.token = AuthToken.getToken();
+        FindTeam.get($scope.user, $scope.token)
+            .then(function (response) {
+                $scope.teamdata = response.data;
+
+                $scope.practiceRace = function () {
+                    $scope.experience = Math.floor(Math.random() * 15);
+                    Practice.do($scope.teamdata._id, $scope.experience, $scope.token)
+                        .then(function (data) {
+                            $scope.success = "You have gained " + $scope.experience + " exp";
+                        })
+                }
+            });
+        
+
     })
-    .controller('managementController', function () {
-        var vm = this;
+    .controller('managementController', function ($scope, AuthToken, FindTeam, FindDriver, Auth, Car) {
+        Auth.getUser()
+            .then(function (response) {
+                if (!response) {
+                    window.location.href = "portal/login";
+                }
+                $scope.user = response.data.username;
+            });
+
+        $scope.token = AuthToken.getToken()
+        FindTeam.get($scope.user, $scope.token)
+            .then(function (response) {
+                $scope.teamdata = response.data;
+
+                FindDriver.get($scope.teamdata.driverID, $scope.token)
+                    .then(function (response) {
+
+                        $scope.car = response.data.car;
+                        $scope.driverdata = response.data;
+
+                        Car.get($scope.car, $scope.token)
+                            .then(function (response) {
+                                $scope.cardata = response.data;
+                            });
+                    });
+            });
+
     })
     .controller('logon', function ($scope) {
         $scope.username = "";
