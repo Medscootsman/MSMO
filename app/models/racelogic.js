@@ -57,7 +57,7 @@ class Race {
             return a[1] - b[1];
         });
         currentlap++;
-}
+    }
       //return the winner only for now so we know that it works.
     return efficiencies;
   }

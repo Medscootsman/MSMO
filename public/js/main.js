@@ -8,16 +8,16 @@ angular.module('portalrouter', ['routerRoutes', 'authService', 'teamService', 'u
         $scope.password = "";
         $scope.test = 1;
         $scope.loggedin = Auth.isLoggedIn();
-
+        $scope.user = "guest, please login";
         if ($scope.loggedin) {
             $scope.logstate = "logout";
+
         }
+
         else {
-            if (!window.location == '/portal/login') {
-                window.location = '/portal/login';
-            }
             $scope.logstate = "login";
         }
+
 
         // function to handle logging out
         $scope.doLogout = function () {
@@ -50,26 +50,13 @@ angular.module('portalrouter', ['routerRoutes', 'authService', 'teamService', 'u
             alert(1);
         }
 
-        // function to handle logging out
-        $scope.doLogout = function () {
-            Auth.logout();
-
-            //nullify the user
-            $scope.user = {};
-
-            //go to login page instead.
-            $location.path('/');
-        };
         // check to see if a user is logged in on every request
         $rootScope.$on('$routeChangeStart', function () {
             // get user information on page load
             Auth.getUser()
                 .then(function (response) {
-                    if (!response) {
-                        window.location.href = "portal/login";
-                    }
                     $scope.user = response.data.username;
-                }).catch(angular.noop);
+                }).catch();
 
         });
 
@@ -90,6 +77,9 @@ angular.module('portalrouter', ['routerRoutes', 'authService', 'teamService', 'u
 
     .controller('chatController', function (Auth) {
         var vm = this;
+        if (!Auth.isLoggedIn()) {
+            window.location.href = "/portal/login";
+        }
         Auth.getUser()
             .then(function (response) {
                 if (!response) {
@@ -98,10 +88,22 @@ angular.module('portalrouter', ['routerRoutes', 'authService', 'teamService', 'u
                 vm.user = response.data.username;
             });
     })
+
+    .controller('registerController', function ($scope, Auth) {
+        $scope.username = '';
+        $scope.password = '';
+        $scope.teamname = '';
+        
+    })
+
     .controller('marketController', function (Purchase, Practice, AuthToken, $scope, Auth, CrewUpgrade, GearboxUpgrade, EngineUpgrade, TyreUpgrade, BodyUpgrade, FindTeam, FindDriver) {
         $scope.bodyPrice = 800;
         $scope.enginePrice = 640;
         $scope.gearboxPrice = 640;
+
+        if (!Auth.isLoggedIn()) {
+            window.location.href = "/portal/login";
+        }
     
         Auth.getUser()
             .then(function (response) {
@@ -119,7 +121,6 @@ angular.module('portalrouter', ['routerRoutes', 'authService', 'teamService', 'u
 
                 FindDriver.get($scope.driverID, $scope.token)
                     .then(function (data) {
-                        console.log(data);
                         $scope.car = data.data.car;
                         
                         //crew
@@ -127,6 +128,7 @@ angular.module('portalrouter', ['routerRoutes', 'authService', 'teamService', 'u
                             console.log(1);
                             Purchase.buy($scope.user, 300, $scope.token)
                                 .then(function (response) {
+
                                     CrewUpgrade.buy($scope.user, $scope.token)
                                         .then(function (response) {
                                             $scope.upgradesuccess = "You have upgraded your crew efficiency by 1";
@@ -202,6 +204,10 @@ angular.module('portalrouter', ['routerRoutes', 'authService', 'teamService', 'u
                 }
                 $scope.user = response.data.username;
             });
+
+        if (!Auth.isLoggedIn()) {
+            window.location.href = "/portal/login";
+        }
         $scope.token = AuthToken.getToken();
         FindTeam.get($scope.user, $scope.token)
             .then(function (response) {
@@ -221,12 +227,14 @@ angular.module('portalrouter', ['routerRoutes', 'authService', 'teamService', 'u
     .controller('managementController', function ($scope, AuthToken, FindTeam, FindDriver, Auth, Car) {
         Auth.getUser()
             .then(function (response) {
-                if (!response) {
-                    window.location.href = "portal/login";
-                }
-                $scope.user = response.data.username;
-            });
 
+                $scope.user = response.data.username;
+
+            }).catch(angular.noop());
+
+        if (Auth.isLoggedIn() != true) {
+            window.location.href = "/portal/login";
+        }
         $scope.token = AuthToken.getToken()
         FindTeam.get($scope.user, $scope.token)
             .then(function (response) {
@@ -246,13 +254,15 @@ angular.module('portalrouter', ['routerRoutes', 'authService', 'teamService', 'u
             });
 
     })
-    .controller('logon', function ($scope) {
+    .controller('logon', function ($scope, Auth) {
         $scope.username = "";
         $scope.password = "";
 
         $scope.submit = function () {
             //make an API call here i guess.
         }
+
+
     });
 
 

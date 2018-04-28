@@ -18,7 +18,8 @@ var jwt = require("jsonwebtoken");
 //old chatnick array i was planning to use.
 var chatnicks = [];
 
-var teamids = [];
+var players = [];
+
 race = new RaceLogic(10, 2, 3);
 
 var supersecret = "Mikeisatraitor"; //token secret,
@@ -269,8 +270,10 @@ router.route('/teams/cash/purchase')
             var deduction = team.cash - req.body.itemCost;
 
             if (deduction < 0) {
-                res.statusCode(403);
-                return res.send("You do not have enough money for that item.");
+                res.json({
+                    success: false,
+                    message: "purchase was not successful",
+                });
             }
 
             console.log(req.body.itemCost);
@@ -715,21 +718,87 @@ io.on('connection', function (socket) {
 
     socket.on('disconnect', function (data) {
         console.log("disconnected");
-        if (!socket.username) return;
+        if (data.username) return;
 
-        chatnicks.splice(chatnicks.indexOf(socket.username));
+        chatnicks.splice(chatnicks.indexOf(data.username));
 
         io.sockets.emit('username', chatnicks);
     });
 
-    socket.on('Race-Start', function (data) {
+    socket.on('start-race', function (data) {
+        //var currentlap = 0;
+        //var efficiencies = [];
+        //while (currentlap < this.laps) {
+          //  efficiencies = [];
+            //for (var i = 0; i < participants.length; i++) {
 
+                //calculate the error and the efficiency
+              //  var eff = 
+                //var error = calculateErrorChance(participant[i].experience);
+        
+                //generate a random number and compare it against error.
+        //        var rand = Math.floor(Math.random() * 100);
+
+          //      if (rand > error) {
+            //        err = reduceEfficiency(eff);
+              //  }
+
+                //efficiencies.push([partipants[i].id, err]);
+            //}
+
+            //resort who's got the highest efficiency.
+            //efficiencies.sort(function (a, b) {
+            //    return a[1] - b[1];
+            //});
+            //currentlap++;
+        //}
+        //return the winner only for now so we know that it works.
+        //return efficiencies
+        
     });
 
     socket.on('join-race', function (data) {
-        race.join(data);
-        io.sockets.emit('race-joined', data.name);
-    }
+
+        //get the required data from the client.
+        var playerobj;
+
+        //teamid so we can handle who won the race at the end.
+        playerobj.teamid = data.teamid;
+
+        //crewlevel
+        playerobj.crewlevel = data.crewlevel;
+
+        //bodylevel
+        playerobj.bodyLevel = data.bodyLevel;
+
+        //enginelevel
+        playerobj.enginelevel = data.enginelevel;
+
+        //gearbox
+        playerobj.gearboxlevel = data.gearboxlevel;
+
+        //tyrelevel
+        playerobj.tyrelevel = data.tyrelevel;
+
+        //experience
+        playerobj.experience = data.experience;
+
+
+        //push the object to the global array in the server.
+        players.push(playerobj);
+
+        console.log('user has joined a race');
+        socket.emit('new-player', players);
+    });
+
+    socket.on('leave-race', function (data) {
+        console.log("disconnected");
+        if (data.teamid) return;
+
+        chatnicks.splice(chatnicks.indexOf(data.teamid));
+
+        io.sockets.emit('race-player-left', players);
+    });
 
 });
 

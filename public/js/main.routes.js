@@ -1,6 +1,6 @@
 angular.module('routerRoutes', ['ngRoute'])
 
-    //configure our routes 
+    //configurse our routes 
     .config(function ($routeProvider, $locationProvider) {
         $routeProvider
             .when('/', {
@@ -13,7 +13,7 @@ angular.module('routerRoutes', ['ngRoute'])
 
             .when('/portal/login', {
 
-                //base page
+                //login page
                 templateUrl: 'views/pages/login.html',
                 controller: 'mainController',
                 controllerAs: 'main'
@@ -26,18 +26,27 @@ angular.module('routerRoutes', ['ngRoute'])
                 controllerAs: 'leader'
             })
 
+            .when('/portal/register', {
+                templateUrl: 'views/pages/registration.html',
+                controller: 'registerController',
+                controllerAs: 'register',
+            })
+
+            //chat
             .when('/portal/chat', {
                 templateUrl: 'views/pages/chat.html',
                 controller: 'chatController',
                 controllerAs: 'chat'
             })
 
+            //marketplace to buy things
             .when('/portal/marketplace', {
                 templateUrl: 'views/pages/marketplace.html',
                 controller: 'marketController',
                 controllerAs: 'market'
             })
 
+            //races
             .when('/portal/races', {
                 templateUrl: 'views/pages/race.html',
                 controller: 'raceController',
