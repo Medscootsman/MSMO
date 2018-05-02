@@ -12,6 +12,10 @@
         margin-right: 30%;
         margin-top: 20px;
         margin-bottom: 20px;
+		
+		#header {
+			text-align: center;
+		}
     }
 </style>
 <div ng-app="portalrouter" ng-controller="mainController as main">
@@ -20,9 +24,9 @@
     <![endif]-->
 
     <!-- Login screen -->
-    <div class="ui middle aligned center aligned grid">
+    <div class="ui form">
         <div class="column">
-            <h2 class="header">Log into your account</h2>
+            <h2 class="header " id="header">Log into your account</h2>
 
             <form class="ui large form" ng-submit="loginuser()">
                 <div class="ui stacked segment">
@@ -49,8 +53,6 @@
                 New to MSMO? <a href="/portal/register">Sign up here!</a>
             </div>
 
-        </div>
-    </div>
 
 
 

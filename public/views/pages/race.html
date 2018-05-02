@@ -1,14 +1,42 @@
 <h3>Races</h3>
 
 <p>To join a race, click the join button</p>
+<p>Once 3 players have joined, the race will begin</p>
 
+<div id="totalParticipants" style="height: 300px; overflow-y:scroll; float:right; padding-right:5%;"></div>
 <div class="ui buttons">
-    <button class="ui positive button">Join race</button>
+    <button class="ui positive button" id="join" ng-click="joinrace()">Join race</button>
     <div class="or"></div>
-    <button class="ui button">Cancel race</button>
+    <button class="ui button" id="leave" ng-click="leaverace()">Cancel race</button>
 </div>
-<div id="totalParticipants"></div>
 
 <h4>Practice</h4>
 <button ng-click="practiceRace()" class="ui neutral button">Practice Race</button>
 <p>{{success}}</p>
+
+<script>
+    //disable the leave button
+    $('#leave').prop("disabled", true);
+
+    socket.on('new-player', function (data) {
+        $('#totalParticipants').append('<p>' + data + '</p>');
+    });
+
+    socket.on('race-player-left', function (data) {
+        $('#totalParticipants').append('<p>' + data + '</p>');
+    });
+
+    socket.on('winner-announced', function (data) {
+        $('#totalParticipants').append('<p>' + data + '</p>');
+    });
+
+    $('#join').click(function () {
+        $('#join').prop("disabled", true);
+        $('#leave').prop("disabled", false);
+    });
+
+    $('#leave').click(function () {
+        $('#leave').prop("disabled", true);
+        $('#join').prop("disabled", false);
+    });
+</script>

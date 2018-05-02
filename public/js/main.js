@@ -89,10 +89,55 @@ angular.module('portalrouter', ['routerRoutes', 'authService', 'teamService', 'u
             });
     })
 
-    .controller('registerController', function ($scope, Auth) {
+    .controller('registerController', function ($scope, Auth, AuthRegisterUser) {
         $scope.username = '';
         $scope.password = '';
-        $scope.teamname = '';
+        $scope.password = '';
+        $scope.confirmpassword = '';
+        $scope.personName = '';
+        $scope.teamName = '';
+        $scope.firstName = '';
+        $scope.lastName = '';
+        $scope.carName = '';
+
+        //function to register the user.
+        $scope.registeruser = function () {
+            AuthRegisterUser.RegisterUser($scope.personName, $scope.username, $scope.password)
+                .then(function (response) {
+
+                    //login the user
+                    Auth.login($scope.username, $scope.password)
+                        .then(function (response) {
+                            if (!response) return;
+
+                            //get the user
+                            var res = Auth.getUser();
+
+                            //create the driver and store the id.
+
+                            AuthRegisterUser.registerDriver($scope.carName, $scope.firstName, $scope.lastName)
+                                .then(function (response) {
+
+                                    console.log(response);
+
+                                    var driverid = response.data.id;
+                                    console.log(driverid);
+                                    //now create the team.
+                                    AuthRegisterUser.registerTeam($scope.username, $scope.teamName, driverid)
+                                        .then(function (response) {
+                               
+                                            if (!response) return;
+
+                                            if (response.data.code == 11000) return;
+                                            window.location.href = "../";
+                                            $scope.log = "/"
+                                            $scope.logstate = "logout";
+                                        });
+                                });
+
+                        });
+                });
+        }
         
     })
 
@@ -195,8 +240,10 @@ angular.module('portalrouter', ['routerRoutes', 'authService', 'teamService', 'u
             });
 
     })
-    
-    .controller('raceController', function ($scope, Practice, FindTeam, Auth, AuthToken, doRace) {
+
+    //race logic
+    .controller('raceController', function ($scope, Races, awardSystem, Practice, FindTeam, FindDriver, Auth, AuthToken, Car) {
+        socket = io();
         Auth.getUser()
             .then(function (response) {
                 if (!response) {
@@ -209,6 +256,8 @@ angular.module('portalrouter', ['routerRoutes', 'authService', 'teamService', 'u
             window.location.href = "/portal/login";
         }
         $scope.token = AuthToken.getToken();
+
+        //finds a team.
         FindTeam.get($scope.user, $scope.token)
             .then(function (response) {
                 $scope.teamdata = response.data;
@@ -219,6 +268,49 @@ angular.module('portalrouter', ['routerRoutes', 'authService', 'teamService', 'u
                         .then(function (data) {
                             $scope.success = "You have gained " + $scope.experience + " exp";
                         })
+                };
+
+
+                //for when the user joins the race.
+                $scope.joinrace = function () {
+                    FindDriver.get($scope.teamdata.driverID, $scope.token)
+
+                        .then(function (driverData) {
+                            console.log(driverData);
+                            Car.get(driverData.data.car, $scope.token)
+
+                                .then(function (carData) {
+                                    console.log(carData);
+                                    socket.emit('join-race', $scope.teamdata, carData.data);
+                                    $scope.leaverace = function () {
+                                        socket.emit('leave-race', $scope.teamdata)
+                                    }
+                                });
+
+                            socket.on('cash-awarded-winner', function (data) {
+                                console.log(data);
+                                if (data == $scope.teamdata._id) {
+                                    awardSystem.reward($scope.teamdata._id, 5000, $scope.token)
+                                        .then(function (response) {
+                                            alert("you have been awarded 3000 for winning the race!");
+                                        });
+                                }
+                            });
+
+                            socket.on('cash-awarded', function (data) {
+
+                                for (i = 0; i < data.length; i++) {
+                                    if (data[i][i] == $scope.teamdata._id) {
+
+                                        awardSystem.reward($scope.teamdata._id, 300, $scope.token)
+                                            .then(function (response) {
+                                                alert("you have been awarded 300 for taking part in the race!");
+                                            });
+
+                                    }
+                                }
+                            });
+                        });
                 }
             });
         

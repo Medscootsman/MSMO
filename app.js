@@ -95,76 +95,46 @@ router.route('/teams')
       if(teams.length <= 0) {
         res.send("no teams have been added yet!");
       }
-			else {
+	  else {
       	res.json(teams);
-			}
+	  }
     })
 	})
 
-	.post(function (req, res) {
-		//you will need a player and a driver. Check either exist first.
-		Driver.findById(req.body.dID, function(err, driver) {
-			if(err) return res.send("No driver was present in the request");
+    .post(function (req, res) {
+	    //you will need a player and a driver. Check either exist first.
+        Driver.findById(req.body.dID, function (err, driver) {
+		if(err) return console.log("No driver was present in the request");
 
-			//now try to find the playerID
-			User.findById(req.body.pID, function(err, user) {
-				if(err) return res.send("No player was present in the request");
-
-				//now that you have both driver and player, add a new team.
-				var team = new Team();
-
-				team.name = req.body.name;
-				team.experience = 0;
-				team.driverID = req.body.dID;
-				team.crewLevel = 1;
-                team.username = req.body.username;
-                team.cash = 0;
-
-				team.save(function(err) {
-						if(err) {
-							return res.send(err);
-						} else {
-							res.send("team has been created");
-							console.log("A new team called" + team.name + " has been created");
-						}
-				});
-			})
+			//now that you have both driver and player, add a new team.
+			var team = new Team();
+            console.log(team);
+			team.name = req.body.name;
+			team.experience = 0;
+            team.driverID = req.body.dID;
+			team.crewLevel = 1;
+            team.username = req.body.username;
+            team.cash = 0;
+			team.save(function(err) {
+                if (err) {
+                    console.log(err);
+					return res.send(err);
+                } else {
+                    console.log(2)
+				    res.send("team has been created");
+				    console.log("A new team called" + team.name + " has been created");
+			    }
+			});
 		})
 	})
 
 	.put(function (req, res) {
-		Team.findById(req.body.uID, function(err, team) {
+		Team.findById(req.body.uid, function(err, team) {
 			if(err) return res.send("No team to update");
-
-			//otherwise update the team.
-
-			if(req.body.name != "undefined") {
-				team.name = req.body.name;
-			}
-
-			if(req.body.exp != "undefined") {
-				team.experience = req.body.exp;
-			}
-
-			if(req.body.crewlevel != "undefined") {
-				team.crewLevel = req.body.crewlevel;
-			}
-
-			if(req.body.dID != "undefined") {
-				team.driverID = req.body.dID;
-			}
-
-			if(req.body.pID != "undefined") {
-				team.driverID = req.body.pID;
-            }
-
-            if (req.body.experience != "undefined") {
-                team.experience += req.body.experience;
-            }
-
-            if (req.body.cash != "undefined") {
-                team.cash += req.body.cash;
-            }
+            console.log(req);
+			//otherwise update the team's cash
+            team.cash += req.body.cash;
+            
 
 			team.save(function(err) {
 				if(err) {
@@ -475,6 +445,8 @@ router.route('/drivers')
 			car.engineLevel = Math.floor(Math.random() * 5);
 			car.bodyLevel = Math.floor(Math.random() * 5);
 
+            console.log(req.body);
+
 			driver.forename = req.body.forename;
 			driver.surname = req.body.surname;
 			driver.age = Math.floor((Math.random() * 20) + 1) + 18;
@@ -494,7 +466,11 @@ router.route('/drivers')
 	            }
 	      //return success message
 				console.log("a new driver called " + driver.forename + " has been registered with the system.");
-				res.send("driver and car created!")
+                res.json({
+                    id: driver._id,
+                    success: true,
+                    message: "a new driver was created",
+                });
 	    });
 	});
 
@@ -726,78 +702,64 @@ io.on('connection', function (socket) {
     });
 
     socket.on('start-race', function (data) {
-        //var currentlap = 0;
-        //var efficiencies = [];
-        //while (currentlap < this.laps) {
-          //  efficiencies = [];
-            //for (var i = 0; i < participants.length; i++) {
-
-                //calculate the error and the efficiency
-              //  var eff = 
-                //var error = calculateErrorChance(participant[i].experience);
-        
-                //generate a random number and compare it against error.
-        //        var rand = Math.floor(Math.random() * 100);
-
-          //      if (rand > error) {
-            //        err = reduceEfficiency(eff);
-              //  }
-
-                //efficiencies.push([partipants[i].id, err]);
-            //}
-
-            //resort who's got the highest efficiency.
-            //efficiencies.sort(function (a, b) {
-            //    return a[1] - b[1];
-            //});
-            //currentlap++;
-        //}
-        //return the winner only for now so we know that it works.
-        //return efficiencies
         
     });
 
-    socket.on('join-race', function (data) {
+    socket.on('join-race', function (team, car) {
 
         //get the required data from the client.
-        var playerobj;
-
+        var playerobj = {};
         //teamid so we can handle who won the race at the end.
-        playerobj.teamid = data.teamid;
+        playerobj.teamid = team._id;
+
+        playerobj.name = team.name;
 
         //crewlevel
-        playerobj.crewlevel = data.crewlevel;
+        playerobj.crewlevel = team.crewLevel;
 
         //bodylevel
-        playerobj.bodyLevel = data.bodyLevel;
+        playerobj.bodyLevel = car.bodyLevel;
 
         //enginelevel
-        playerobj.enginelevel = data.enginelevel;
+        playerobj.enginelevel = car.engineLevel;
 
         //gearbox
-        playerobj.gearboxlevel = data.gearboxlevel;
+        playerobj.gearboxlevel = car.gearboxLevel;
 
         //tyrelevel
-        playerobj.tyrelevel = data.tyrelevel;
+        playerobj.tyrelevel = car.tyreType;
 
         //experience
-        playerobj.experience = data.experience;
+        playerobj.experience = team.experience;
 
 
         //push the object to the global array in the server.
         players.push(playerobj);
 
         console.log('user has joined a race');
-        socket.emit('new-player', players);
+        io.sockets.emit('new-player', "the team " + team.name + " has joined");
+        if (players.length > 0) {
+            var results = doRace();
+            console.log("results: " + results);
+            console.log(results[0][2]);
+
+            io.sockets.emit('winner-announced', "Race has been executed: the winner is " + results[0][2] + "!");
+            io.sockets.emit('cash-awarded-winner', results[0][0]);
+            io.sockets.emit('cash-awarded', results);
+
+            //clear the player list.
+            players = [];
+        }
     });
 
     socket.on('leave-race', function (data) {
-        console.log("disconnected");
-        if (data.teamid) return;
+        console.log("user left the race");
+        if (!data._id) return;
 
-        chatnicks.splice(chatnicks.indexOf(data.teamid));
+        players.splice(chatnicks.indexOf(data._id));
 
-        io.sockets.emit('race-player-left', players);
+        io.sockets.emit('race-player-left', "the team " + data.name + " has left");
+        console.log(players);
     });
 
 });
@@ -837,6 +799,48 @@ router.use(function (req, res, next) {
     }
     
 });
+
+doRace = function () {
+    console.log(2);
+    var currentlap = 0;
+    var laps = 3;
+    var efficiencies = [];
+    var complexity = Math.floor(Math.random() * 10);
+    while (currentlap < laps) {
+        efficiencies = [];
+        for (var i = 0; i < players.length; i++) {
+            console.log(players[i]);
+            // calculate the error and the efficiency
+            var eff = (players[i].bodyLevel + players[i].enginelevel + players[i].gearboxlevel + players[i].tyrelevel) * players[i].crewlevel / complexity;
+            var error = Math.floor(Math.random() * 100) / players[i].experience;
+
+
+            //generate a random number and compare it against error.
+            var rand = Math.floor(Math.random() * 100);
+
+            if (rand > error) {
+                eff -= error;
+            }
+
+            efficiencies.push([players[i].teamid, eff, players[i].name]);
+        }
+
+        //resolve who's got the highest efficiency.
+        efficiencies.sort(function (a, b) {
+            return a[1] - b[1];
+        });
+        currentlap++;
+    }
+
+    // return the results
+
+    efficiencies.sort(function (a, b) {
+        return a[1] - b[1];
+    });
+    console.log(efficiencies);
+    efficiencies.reverse();
+    return efficiencies;
+}
 app.use("/api", router);
 
 server.listen(3000, () => console.log('MSMO Online on port 3000'));

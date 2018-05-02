@@ -24,7 +24,7 @@
         <div class="column">
             <h2 class="header">Sign up here</h2>
 
-            <form class="ui form">
+            <form class="ui form" ng-submit="registeruser()">
                 <div class="ui segment">
                     <h3>User information</h3>
                     <div class="field">
@@ -42,21 +42,13 @@
                         </div>
                     </div>
 
-                    <div class="field">
-                        <label>Conifrm Password</label>
-                        <div class="ui left icon input">
-                            <i class="unlock icon"></i>
-                            <input type="password" name="confirmpassword" placeholder="Confirm your password" />
-                        </div>
-                    </div>
-
                     <h3>Roleplay Information</h3>
 
                     <div class="field">
                         <label>Person Name</label>
                         <div class="ui left icon input">
-                            <i class="id card icon"></i>
-                            <input type="text" name="personname" placeholder="enter the name of your manager" />
+                            <i class="user icon"></i>
+                            <input type="text" name="personname" ng-model="personName" placeholder="enter the name of your manager" />
                         </div>
                     </div>
 
@@ -64,7 +56,7 @@
                         <label>Team Name</label>
                         <div class="ui left icon input">
                             <i class="car icon"></i>
-                            <input type="text" name="teamname" placeholder="enter the name of your team" />
+                            <input type="text" name="teamname" ng-model="teamName" placeholder="enter the name of your team" />
                         </div>
                     </div>
 
@@ -75,7 +67,7 @@
                             <label>Forename</label>
                             <div class="ui left icon input">
                                 <i class="male icon"></i>
-                                <input type="text" name="username" placeholder="First name of your driver" />
+                                <input type="text" name="fname" ng-model="firstName" placeholder="First name" />
                             </div>
                         </div>
 
@@ -83,7 +75,15 @@
                             <label>Surname</label>
                             <div class="ui left icon input">
                                 <i class="male icon"></i>
-                                <input type="text" name="username" placeholder="Last name of your driver" />
+                                <input type="text" name="sname" ng-model="lastName" placeholder="Last name" />
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label>carname</label>
+                            <div class="ui left icon input">
+                                <i class="male icon"></i>
+                                <input type="text" name="carname" ng-model="carName" placeholder="car name" />
                             </div>
                         </div>
 

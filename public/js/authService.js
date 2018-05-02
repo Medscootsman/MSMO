@@ -53,13 +53,43 @@ angular.module('authService', [])
                 return $http.get('/api/token/' + AuthToken.getToken(), {
                     cache: true
                 });
-            else 
+            else
                 return $q.reject({ message: 'User has no token.' });
-            };
+        };
         // return auth factory object
         return authFactory;
 
     })
+
+    .factory('AuthRegisterUser', function ($http, $q, Auth) {
+        var factory = {};
+
+			factory.RegisterUser = function (givenpersonName, givenusername, givenpassword) {
+				//register a user, a team, and 1 driver.
+				return $http.post('/api/users/', {
+					personName: givenpersonName,
+					username: givenusername,
+					password: givenpassword,
+				});
+			}
+            factory.registerTeam = function (givenusername, teamname, driverid) {
+                return $http.post('api/teams', {
+                    name: teamname,
+                    dID: driverid,
+                    username: givenusername,
+                });
+            }
+
+            factory.registerDriver = function (carname, fname, sname) {
+                return $http.post('/api/drivers', {
+                    name: carname,
+                    forename: fname,
+                    surname: sname,
+                });
+            }
+            return factory;
+        })
+    
     // ===================================================
     // application configuration to integrate token into requests
     // ===================================================

@@ -26,6 +26,18 @@ angular.module('teamService', [])
 
         return races;
     })
+	
+	.factory('awardSystem', function ($http) {
+        var system = {};
+		system.reward = function (id, award, giventoken) {
+            return $http.put('api/teams', {
+                uid: id,
+                cash: award,
+				token: giventoken,
+            });
+        };
+        return system;
+    })
 
     .factory('Purchase', function ($http) {
 
