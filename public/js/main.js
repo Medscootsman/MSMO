@@ -334,14 +334,16 @@ angular.module('portalrouter', ['routerRoutes', 'authService', 'teamService', 'u
 
                 FindDriver.get($scope.teamdata.driverID, $scope.token)
                     .then(function (response) {
-
+                        
                         $scope.car = response.data.car;
                         $scope.driverdata = response.data;
 
                         Car.get($scope.car, $scope.token)
                             .then(function (response) {
-                                $scope.cardata = response.data;
+                                $scope.cardata = response.data; 
                             });
+                         
+
                     });
             });
 
