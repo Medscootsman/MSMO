@@ -12,4 +12,5 @@ WHAT WORKS:
 -you can win races <br>
 <br>
 WHAT DOESN'T 100% WORK
+<br>
 -registration is bugged. I cannot add new teams due to some bizarre bug that has hit me at the very last minute. (EDIT: WAS FIXED. BUG RELATED TO MONGODB SETUP AND SHOULD NOT HAPPEN ON NEW SYSTEMS.
