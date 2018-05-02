@@ -241,9 +241,9 @@ router.route('/teams/cash/purchase')
             if (err) return res.send("team was not found");
             //check if the team has enough money.
             var deduction = team.cash - req.body.itemCost;
-
-            if (deduction < 0) {
-                res.json({
+            console.log(1);
+            if (deduction <= 0) {
+                return res.json({
                     success: false,
                     message: "purchase was not successful",
                 });
