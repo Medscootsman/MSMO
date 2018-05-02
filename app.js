@@ -108,16 +108,19 @@ router.route('/teams')
 
 			//now that you have both driver and player, add a new team.
 			var team = new Team();
-            console.log(team);
+
 			team.name = req.body.name;
 			team.experience = 0;
             team.driverID = req.body.dID;
 			team.crewLevel = 1;
             team.username = req.body.username;
             team.cash = 0;
+
+            console.log(team);
 			team.save(function(err) {
                 if (err) {
                     console.log(err);
+                    
 					return res.send(err);
                 } else {
                     console.log(2)
@@ -738,7 +741,7 @@ io.on('connection', function (socket) {
 
         console.log('user has joined a race');
         io.sockets.emit('new-player', "the team " + team.name + " has joined");
-        if (players.length > 0) {
+        if (players.length > 1) {
             var results = doRace();
             console.log("results: " + results);
             console.log(results[0][2]);
